@@ -2,4 +2,4 @@
 FROM scratch
 MAINTAINER FinalDuty <root@finalduty.me>
 
-ADD archlinux-2016.04.10.tar.xz /
+ADD archlinux-2016.04.11.tar.xz /
