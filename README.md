@@ -15,7 +15,7 @@ Arch Linux is an independently developed, i686/x86-64 general-purpose GNU/Linux 
 > [wiki.archlinux.org](https://wiki.archlinux.org/index.php/Arch_Linux)
 
 ### Image Build Process
-This image is built from scratch each day, using a modified version of manchoz's [mkimage-arch.sh](https://github.com/dotcloud/docker/blob/master/contrib/mkimage-arch.sh) script. The script is triggered by anacron and runs completely unattended. As such, you can expect a fresh, up to date base image, every day of the week.
+This image is built from scratch each day, using a modified version of (tmc's)[https://github.com/tmc] [mkimage-arch.sh](https://github.com/dotcloud/docker/blob/master/contrib/mkimage-arch.sh) script. The script is triggered by anacron and runs completely unattended. As such, you can expect a fresh, up to date base image, every day of the week.
 
 
 ### Usage
