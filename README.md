@@ -21,27 +21,28 @@ This image is built from scratch each day, using a modified version of manchoz's
 ### Usage
 Try out the container via CLI:
 ```
-    docker pull finalduty/docker:daily
-    docker run --rm -it finalduty/docker:daily
+docker pull finalduty/docker:daily
+docker run --rm -it finalduty/docker:daily
 ```
 
 Build your own image from a Dockerfile via CLI:
 ```
-    cat << EOF > Dockerfile
-    FROM finalduty/docker:weekly
-    MAINTAINER foo <foo@bar.com>
-    RUN pacman -Syu vim --noconfirm
-    EOF
-    docker build -t local/archlinux -f Dockerfile .
+cat << EOF > Dockerfile
+FROM finalduty/docker:weekly
+MAINTAINER foo <foo@bar.com>
+RUN pacman -Syu vim --noconfirm
+EOF
+docker build -t local/archlinux -f Dockerfile .
 ```
 
 ### Caveats
 ##### Localisations and Man-Pages
 To keep the size of the image down, a number of files are deleted during the build process including man pages and localisations. To see what files have been deleted, you can run ````pacman -Qkq````. If you need to replace one of these files, I would suggest reinstalling the packages to replace the files. If you want to further remove files, it's suggested that you do it in one layer to save on wasted space. You can use a Dockerfile such as the one below:
 
-    FROM finalduty/archlinux:daily
-    
-    RUN pacman -Q | awk '{print $1}' | pacman -Syu --noconfirm -; pacman -Scc --noconfirm
+```
+FROM finalduty/archlinux:daily
+RUN pacman -Q | awk '{print $1}' | pacman -Syu --noconfirm -; pacman -Scc --noconfirm
+```
 
 ##### systemd
 Not currently supported. If you can make it work, please let me know.
