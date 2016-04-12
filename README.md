@@ -1,12 +1,11 @@
-## finalduty/archlinux
-Minimal base docker image for ArchLinux, built from scratch daily
-
 ### Releases and Tags
 
-* ````latest```` - Updated on each push to Master
-* ````daily```` - Updated once per day
-* ````weekly```` - Updated every Sunday night
-* ````monthly```` - Updated on the first day of every month
+* ````latest```` - Updated on each push to Master [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/master/Dockerfile)
+* ````daily```` - Updated every day [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/daily/Dockerfile)
+* ````weekly```` - Updated every Sunday night [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/weekly/Dockerfile)
+* ````monthly```` - Updated on the first day of every month [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/daily/Dockerfile)
+
+Tagged images are built from the same source repo. The only difference is when the Git Tags on the repo are updated. For example, if you pull the monthly and daily images on the 1st of the month, the contents of each image will be the same. The only difference will be the Image ID as Dockerhub builds the two as seperate images.
 
 ### Arch Linux
 ![](https://sources.archlinux.org/other/artwork/archlinux-logo-dark-90dpi.png)
@@ -18,13 +17,27 @@ Arch Linux is an independently developed, i686/x86-64 general-purpose GNU/Linux 
 ### Image Build Process
 This image is built from scratch each day, using a modified version of manchoz's [mkimage-arch.sh](https://github.com/dotcloud/docker/blob/master/contrib/mkimage-arch.sh) script. The script is triggered by anacron and runs completely unattended. As such, you can expect a fresh, up to date base image, every day of the week.
 
+
+### Usage
+Try out the container via CLI:
+    docker pull finalduty/docker:daily
+    docker run --rm -it finalduty/docker:daily
+
+Build your own image from a Dockerfile via CLI:
+    cat << EOF > Dockerfile
+    FROM finalduty/docker:weekly
+    MAINTAINER foo <foo@bar.com>
+    RUN pacman -Syu vim --noconfirm
+    EOF
+    docker build -t local/archlinux -f Dockerfile .
+
 ### Caveats
 #### Localisations and Man-Pages
 To keep the size of the image down, a number of files are deleted during the build process including man pages and localisations. To see what files have been deleted, you can run ````pacman -Qkq````. If you need to replace one of these files, I would suggest reinstalling the packages to replace the files. If you want to further remove files, it's suggested that you do it in one layer to save on wasted space. You can use a Dockerfile such as the one below:
 
     FROM finalduty/archlinux:daily
     
-    RUN pacman -Q | awk '{print $1}' | pacman -Syu -; pacman -Scc
+    RUN pacman -Q | awk '{print $1}' | pacman -Syu --noconfirm -; pacman -Scc --noconfirm
 
 #### systemd
 Not currently supported. If you can make it work, please let me know.
