@@ -1,9 +1,9 @@
 ### Releases and Tags
 
-* ````latest```` - Updated on each push to Master [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/master/Dockerfile)
-* ````daily```` - Updated every day [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/daily/Dockerfile)
+* ````latest```` - Updated on every push to Master [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/master/Dockerfile)
+* ````daily```` - Updated once every day [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/daily/Dockerfile)
 * ````weekly```` - Updated every Sunday night [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/weekly/Dockerfile)
-* ````monthly```` - Updated on the first day of every month [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/daily/Dockerfile)
+* ````monthly```` - Updated on the first day of every month [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/monthly/Dockerfile)
 
 Tagged images are built from the same source repo. The only difference is when the Git Tags on the repo are updated. For example, if you pull the monthly and daily images on the 1st of the month, the contents of each image will be the same. The only difference will be the Image ID as Dockerhub builds the two as seperate images.
 
