@@ -2,6 +2,6 @@
 FROM scratch
 MAINTAINER FinalDuty <root@finalduty.me>
 
-ADD archlinux-2016.04.24.tar.xz /
+ADD archlinux-2016.04.25.tar.xz /
 
 CMD /bin/bash
