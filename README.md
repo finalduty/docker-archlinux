@@ -48,5 +48,3 @@ RUN pacman -Q | awk '{print $1}' | pacman -Syu --noconfirm -; pacman -Scc --noco
 I haven't tested if this works or what is required to get it to work. It is possible to take the ExecStart command out of a package's unit file and add that as a CMD layer to your own Dockerfile. This example will start xinetd and a bash shell so you can still attach to the container:
     CMD /usr/bin/xinetd -dontfork; /bin/bash
 
-![](http://dockeri.co/image/finalduty/archlinux)
-
