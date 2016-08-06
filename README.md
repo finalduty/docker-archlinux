@@ -15,7 +15,7 @@ Arch Linux is an independently developed, i686/x86-64 general-purpose GNU/Linux 
 > [wiki.archlinux.org](https://wiki.archlinux.org/index.php/Arch_Linux)
 
 ### Image Build Process
-This image is built from scratch each day, using a modified version of (tmc's)[https://github.com/tmc] [mkimage-arch.sh](https://github.com/dotcloud/docker/blob/master/contrib/mkimage-arch.sh) script. The script is triggered by anacron and runs completely unattended. As such, you can expect a fresh, up to date base image, every day of the week.
+Rather than running a `pacman -Syu` on an older version of a container, this image is built from scratch every day, using [mkdocker-archlinux.sh](https://github.com/finalduty/docker-archlinux/blob/master/mkdocker-archlinux.sh). This is a modified version of [tmc's](https://github.com/tmc) original [mkimage-arch.sh](https://github.com/dotcloud/docker/blob/master/contrib/mkimage-arch.sh) script. The script is triggered by anacron and runs completely unattended. As such, you can expect a fresh, up to date base image, every day of the week.
 
 
 ### Usage
@@ -24,6 +24,7 @@ Try out the container via CLI:
 docker pull finalduty/docker:daily
 docker run --rm -it finalduty/docker:daily
 ```
+
 
 Build your own image from a Dockerfile via CLI:
 ```
@@ -35,6 +36,7 @@ EOF
 docker build -t local/archlinux -f Dockerfile .
 ```
 
+
 ### Caveats
 ##### Localisations and Man-Pages
 To keep the size of the image down, a number of files are deleted during the build process including man pages and localisations. To see what files have been deleted, you can run ````pacman -Qkq````. If you need to replace one of these files, I would suggest reinstalling the packages to replace the files. If you want to further remove files, it's suggested that you do it in one layer to save on wasted space. You can use a Dockerfile such as the one below:
@@ -44,7 +46,10 @@ FROM finalduty/archlinux:daily
 RUN pacman -Q | awk '{print $1}' | pacman -Syu --noconfirm -; pacman -Scc --noconfirm
 ```
 
+
 ##### systemd
 I haven't tested if this works or what is required to get it to work. It is possible to take the ExecStart command out of a package's unit file and add that as a CMD layer to your own Dockerfile. This example will start xinetd and a bash shell so you can still attach to the container:
-    CMD /usr/bin/xinetd -dontfork; /bin/bash
+```
+CMD /usr/bin/xinetd -dontfork; /bin/bash
+```
 
