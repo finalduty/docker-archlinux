@@ -3,6 +3,7 @@ set -e
 
 export LANG="C.UTF-8"
 
+GITDIR='/root/archlinux/'
 DATE=`date +%Y.%m.%d`
 ROOTFS=$(mktemp -d ${TMPDIR:-/var/tmp}/rootfs-archlinux-XXXXXXXXXX)
 chmod 755 $ROOTFS
@@ -83,9 +84,9 @@ ln -sf /proc/self/fd $DEV/fd
 
 
 ## Compress add to git repo
-cd /root/docker-archlinux
-git pull
-git rm /root//docker-archlinux/*.xz
+cd $GITDIR
+git fetch --depth=1 --tags
+git rm $GITDIR/*.xz
 XZ_OPTS=-2 tar --numeric-owner -C $ROOTFS -cJf archlinux-$DATE.tar.xz .
 chmod -v 644 archlinux-$DATE.tar.xz
 sed -i "s|^ADD archlinux-.*$|ADD archlinux-$DATE.tar.xz /|" Dockerfile
@@ -94,12 +95,14 @@ git commit -m "Auto Update - $DATE"
 
 ## Update Tags - Only run during autorun hour (3am)
 if [ `date +%H` -eq 3 ]; then
-  git tag -d daily && git push origin :daily && git tag -a daily -m "Daily Update - $DATE"
-  [ `date +%u` -eq 1 ] && git tag -d weekly && git push origin :weekly && git tag -a weekly -m "Weekly Update - $DATE"
-  [ `date +%d` -eq 1 ] && git tag -d monthly && git push origin :monthly && git tag -a monthly -m "Monthly Update - $DATE"
+  git tag -d daily && git push origin :daily; git tag -a daily -m "Daily Update - $DATE"
+  [ `date +%u` -eq 1 ] && git tag -d weekly && git push origin :weekly; git tag -a weekly -m "Weekly Update - $DATE"
+  [ `date +%d` -eq 1 ] && git tag -d monthly && git push origin :monthly; git tag -a monthly -m "Monthly Update - $DATE"
 fi
 
 git push --follow-tags
+find $GITDIR -mindepth 1 -delete
+git clone --depth=1  git@github.com:finalduty/docker-archlinux.git $GITDIR
 
 rm -rf $ROOTFS
 
