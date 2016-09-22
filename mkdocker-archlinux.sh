@@ -103,6 +103,7 @@ fi
 git push --follow-tags
 find $GITDIR -mindepth 1 -delete
 git clone --depth=1  git@github.com:finalduty/docker-archlinux.git $GITDIR
+git fetch --tags --depth=1
 
 rm -rf $ROOTFS
 
