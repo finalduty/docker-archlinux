@@ -1,14 +1,15 @@
-#!/bin/bash
-set -e
+#!/bin/bash 
+set -e 
 
 export LANG="C.UTF-8"
+umask=022
 
+## Variables
 GITDIR='/root/archlinux/'
 DATE=`date +%Y.%m.%d`
-ROOTFS=$(mktemp -d ${TMPDIR:-/var/tmp}/rootfs-archlinux-XXXXXXXXXX)
-chmod 755 $ROOTFS
+ROOTFS=`mktemp -d ${TMPDIR:-/var/tmp}/rootfs-archlinux-XXXXXXXXXX`
 
-# packages to ignore for space savings
+## Ignored packages to reduce image size
 PKGIGNORE=(
     cryptsetup
     device-mapper
@@ -61,7 +62,6 @@ arch-chroot $ROOTFS /bin/sh -c "haveged -w 1024; pacman-key --init; pkill havege
 arch-chroot $ROOTFS /bin/sh -c "ln -s /usr/share/zoneinfo/UTC /etc/localtime"
 echo 'en_US.UTF-8 UTF-8' > $ROOTFS/etc/locale.gen
 arch-chroot $ROOTFS locale-gen
-#arch-chroot $ROOTFS /bin/sh -c 'echo $PACMAN_MIRRORLIST > /etc/pacman.d/mirrorlist'
 arch-chroot $ROOTFS /bin/sh -c 'rm -rf /usr/lib/firmware/*
 
 # udev doesn't work in containers, rebuild /dev
@@ -83,27 +83,41 @@ mknod -m 666 $DEV/ptmx c 5 2
 ln -sf /proc/self/fd $DEV/fd
 
 
-## Compress add to git repo
+## Compress and add to git repo
 cd $GITDIR
 git fetch --depth=1 --tags
-git rm $GITDIR/*.xz
-XZ_OPTS=-2 tar --numeric-owner -C $ROOTFS -cJf archlinux-$DATE.tar.xz .
-chmod -v 644 archlinux-$DATE.tar.xz
+git rm "$GITDIR/*.xz"
+XZ_OPTS=-2 tar --checkpoint=2500 --warning=no-file-ignored --numeric-owner -C $ROOTFS -cJf "archlinux-$DATE.tar.xz" .
+chmod -v 644 "archlinux-$DATE.tar.xz"
 sed -i "s|^ADD archlinux-.*$|ADD archlinux-$DATE.tar.xz /|" Dockerfile
-git add archlinux-$DATE.tar.xz Dockerfile
-git commit -m "Auto Update - $DATE"
+git add "archlinux-$DATE.tar.xz" Dockerfile
 
-## Update Tags - Only run during autorun hour (3am)
-if [ `date +%H` -eq 3 ]; then
-  git tag -d daily && git push origin :daily; git tag -a daily -m "Daily Update - $DATE"
-  [ `date +%u` -eq 1 ] && git tag -d weekly && git push origin :weekly; git tag -a weekly -m "Weekly Update - $DATE"
-  [ `date +%d` -eq 1 ] && git tag -d monthly && git push origin :monthly; git tag -a monthly -m "Monthly Update - $DATE"
+## Update Tags - Only run at certain hours or on certain dates
+if [ `date +%H` -ne 3 ]; then
+    git commit -m "Auto Update - $DATE"
+    git tag -d daily && git push origin :daily
+    git tag -a daily -m "Daily Update - $DATE"
+    if [ `date +%u` -eq 1 ]; then
+        git tag -d weekly && git push origin :weekly
+        git tag -a weekly -m "Weekly Update - $DATE"
+    fi
+    if [ `date +%d` -eq 1 ]; then
+        git tag -d monthly && git push origin :monthly
+        git tag -a monthly -m "Monthly Update - $DATE"
+    fi
+else
+    git commit  
 fi
 
+## Push new files and tags to git (obviously :p)
 git push --follow-tags
-find $GITDIR -mindepth 1 -delete
-git clone --depth=1  git@github.com:finalduty/docker-archlinux.git $GITDIR
-git fetch --tags --depth=1
 
+## Clean out build location
 rm -rf $ROOTFS
+
+## Clean out local git repo to keep disk use down
+find $GITDIR -mindepth -delete
+git clone --depth=1 git@github.com:finalduty/docker-archlinux $GITDIR
+git fetch --tags --depth=1
+chown andy. -R /root/archlinux/
 
