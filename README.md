@@ -20,7 +20,7 @@ This image is built from scratch each day, using a modified version of [tmc's](h
 
 ### Usage
 Try out the container via CLI:
-``` bash
+```
 docker pull finalduty/docker:daily
 docker run --rm -it finalduty/docker:daily
 ```
