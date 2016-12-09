@@ -20,10 +20,8 @@ This image is built from scratch each day, using a modified version of [tmc's](h
 
 ### Usage
 Try out the container via CLI:
-```
-docker pull finalduty/docker:daily
-docker run --rm -it finalduty/docker:daily
-```
+    docker pull finalduty/docker:daily
+    docker run --rm -it finalduty/docker:daily
 
 Build your own image from a Dockerfile via CLI:
 ```
