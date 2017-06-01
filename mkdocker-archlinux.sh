@@ -30,7 +30,6 @@ PKGIGNORE=(
     reiserfsprogs
     s-nail
     systemd-sysvcompat
-    usbutils
     vi
     xfsprogs
 )
