@@ -1,3 +1,6 @@
+![](https://img.shields.io/docker/stars/finalduty/archlinux.png) 
+![](https://img.shields.io/docker/pulls/finalduty/archlinux.png) 
+
 ### Releases and Tags
 
 * ````latest```` - Updated on every push to Master [Dockerfile](https://github.com/finalduty/docker-archlinux/blob/master/Dockerfile)
