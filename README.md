@@ -24,14 +24,14 @@ This image is built from scratch each day, using a modified version of [tmc's](h
 ### Usage
 Try out the container via CLI:
 ```
-docker pull finalduty/docker:daily
-docker run --rm -it finalduty/docker:daily
+docker pull finalduty/archlinux:daily
+docker run --rm -it finalduty/archlinux:daily
 ```
 
 Build your own image from a Dockerfile via CLI:
 ```
 cat << EOF > Dockerfile
-FROM finalduty/docker:weekly
+FROM finalduty/archlinux:weekly
 MAINTAINER foo <foo@bar.com>
 RUN pacman -Syu vim --noconfirm; pacman -Scc --noconfirm
 EOF
@@ -52,7 +52,7 @@ RUN pacman -Q | awk '{print $1}' | pacman -Syu --noconfirm -; pacman -Scc --noco
 I haven't tested if this works or what is required to get it to work. It is possible to take the ExecStart command out of a package's unit file and add that as a CMD layer to your own Dockerfile. This example will start xinetd and a bash shell so you can still attach to the container:
 
 ```
-FROM finalduty/docker:monthly
+FROM finalduty/archlinux:monthly
 MAINTAINER foo <foo@bar.com>
 CMD /usr/bin/xinetd -dontfork; /bin/bash
 ```
